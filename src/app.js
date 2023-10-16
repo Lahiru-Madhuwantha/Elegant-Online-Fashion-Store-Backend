@@ -11,9 +11,11 @@ const BuyerRouter = require('./routes/buyer');
 const ProductRouter = require('./routes/products');
 const OrderRouter = require('./routes/order');
 const fileUpload = require('express-fileupload');
+const cors = require('cors');
 
-const port = process.env.PORT
+const port = process.env.PORT || 3005;
 
+app.use(cors());
 app.use(express.json())
 app.use(fileUpload());
 app.use('/uploads/products',express.static('public/products'))

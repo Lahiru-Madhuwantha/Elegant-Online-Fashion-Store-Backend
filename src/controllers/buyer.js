@@ -55,7 +55,7 @@ exports.register =async(req, res, next)=>{
       }
       const isUserAvailable = await BuyerModel.findOne({email: email, phone: phone}).exec();
       if(isUserAvailable) {
-        throw createHttpError(400,'User already exists')
+        return res.status(400).json({ status: 'Error', message: 'User already exists' });
       }
   
       const hashedPassword = await bcrypt.hash(password, 12);
