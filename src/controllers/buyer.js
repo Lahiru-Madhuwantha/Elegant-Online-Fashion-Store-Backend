@@ -2,6 +2,7 @@ const BuyerModel = require('../model/buyer')
 const createHttpError = require('http-errors')
 const bcrypt = require('bcrypt'); 
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 exports.login = async(req, res, next)=>{
   const email = req.body.email
@@ -51,16 +52,18 @@ exports.register =async(req, res, next)=>{
     const phone = req.body.phone
     try {
       if(!email || !password || !phone || !name ) {
-        throw createHttpError(400,'All things required')
+        //throw createHttpError(400,'All things required')
+        console.log('All things required');
       }
-      const isUserAvailable = await BuyerModel.findOne({email: email, phone: phone}).exec();
-      if(isUserAvailable) {
-        return res.status(400).json({ status: 'Error', message: 'User already exists' });
+      let buyer = await BuyerModel.findOne({email: email});
+      if(buyer) {
+        console.log('User already exists');
+        return res.status(400).json({ message: 'User already exists' });
       }
   
       const hashedPassword = await bcrypt.hash(password, 12);
   
-      const buyer = new BuyerModel({
+      buyer = new BuyerModel({
         name: name,
         email: email,
         password: hashedPassword,
