@@ -17,6 +17,10 @@ const buyerSchema = new Schema({
     type: String,
     required: true
   },
+  token:{
+    type: String,
+    required: false,
+  }
   
 });
 const Buyer = mongoose.model('Buyer', buyerSchema);

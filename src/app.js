@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const BuyerModel = require('./model/buyer');
 const BuyerRouter = require('./routes/buyer');
 const ProductRouter = require('./routes/products');
+const OrderRouter = require('./routes/order');
 const fileUpload = require('express-fileupload');
 
 const port = process.env.PORT
@@ -19,6 +20,7 @@ app.use('/uploads/products',express.static('public/products'))
 
 app.use('/api/v1/buyer', BuyerRouter);
 app.use('/api/v1/product', ProductRouter);
+app.use('/api/v1/order', OrderRouter);
 
 app.get('/', (req, res,next) => {
   try {
