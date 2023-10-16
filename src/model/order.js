@@ -26,6 +26,10 @@ const orderSchema = new Schema({
   orederStatus:{
     type: String,
     required: true,
+  },
+  description:{
+    type: String,
+    required: true,
   }
 });
 
