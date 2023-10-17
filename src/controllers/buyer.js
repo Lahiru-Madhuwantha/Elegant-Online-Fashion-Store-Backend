@@ -4,50 +4,82 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
-exports.login = async(req, res, next)=>{
-  const email = req.body.email
-  const password = req.body.password
+exports.login = async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
 
   try {
-    if(!email || !password) {
-      throw createHttpError(400,'All fields required')
+    if (!email || !password) {
+      throw createHttpError(400, 'All fields required');
     }
 
-    const buyer = await BuyerModel.findOne({email: email}).exec();
-    if(!buyer) {
-      throw createHttpError(400,'User not found')
+    
+    const adminCredentials = {
+      email: 'balasooriya@gmail.com',
+      password: '3838', 
+    };
+
+    if (email === adminCredentials.email && password === adminCredentials.password) {
+      // Admin login
+      const token = jwt.sign(
+        {
+          user_id: 'admin', 
+          email: adminCredentials.email,
+          role: 'admin',
+        },
+        process.env.JWT_TOKEN_KEY,
+        {
+          expiresIn: '8h',
+        }
+      );
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 8 * 60 * 60 * 1000), // 8 hours
+        secure: process.env.NODE_ENV === 'production',
+      });
+
+      return res.status(200).json({ role: 'admin', token });
+    }
+
+    
+    const buyer = await BuyerModel.findOne({ email: email }).exec();
+    if (!buyer) {
+      throw createHttpError(400, 'User not found');
     }
 
     const isPasswordValid = await bcrypt.compare(password, buyer.password);
-    if(!isPasswordValid) {
-      throw createHttpError(400,'Invalid Password')
+    if (!isPasswordValid) {
+      throw createHttpError(400, 'Invalid Password');
     }
 
-    const user = await BuyerModel.findOne({email: email}).exec();
-    const token = jwt.sign({
+    const user = await BuyerModel.findOne({ email: email }).exec();
+    const token = jwt.sign(
+      {
         user_id: user._id,
         email: user.email,
-    },
-    process.env.JWT_TOKEN_KEY,
-    {
-        expiresIn: "8h",
-    }
+        role: 'buyer',
+      },
+      process.env.JWT_TOKEN_KEY,
+      {
+        expiresIn: '8h',
+      }
+    );
 
-    )
     res.cookie('token', token, {
       httpOnly: true,
       expires: new Date(Date.now() + 8 * 60 * 60 * 1000), // 8 hours
-      secure: process.env.NODE_ENV === 'production', 
+      secure: process.env.NODE_ENV === 'production',
     });
-    
+
     user.token = token;
-    
+
     const result = await user.save();
-    res.status(200).send(result);
+    res.status(200).json({ role: 'buyer', token });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 exports.register =async(req, res, next)=>{
   
