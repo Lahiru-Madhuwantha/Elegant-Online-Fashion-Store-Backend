@@ -42,7 +42,7 @@ app.use((err,req,res,next) => {
   } else {
     res.status(500).send({message: err.message})
   }
-  res.status(500).send({message: "Error Unknown"})
+  //res.status(500).send({message: "Error Unknown"})
 })
 
 

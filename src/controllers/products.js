@@ -1,8 +1,10 @@
 const createHttpError = require('http-errors')
 const ProductModel = require('../model/product')
 const mongoose = require('mongoose')
+const path = require('path')
 
 exports.create = async (req, res,next) => {
+  //console.log(req.body);
   const{
     name,
     price,
@@ -11,20 +13,22 @@ exports.create = async (req, res,next) => {
   } = req.body;
   try {
     const { image } = req.files;
-    if(!image) {
-      throw createHttpError(404,'Image Not found')
-    };
-    if(!image.mimeType.startswith('image')) {
-      throw createHttpError(400,'Only image are allowed')
-    };
-    let filepath = __dirname + '../../../public/products/' + image.name;
+    //console.log(image);
+    
+    
+    let filepath = path.join(__dirname,'/../../public/products/',image.name);
+    console.log('Filepath:', __dirname, '/../../public/products/', image.name);
+
+    //let filepath = path.join(__dirname, '../../public/products/' , image.name);
+    console.log(filepath);
      image.mv(filepath);
 
-    let filepathtoUpload = '/public/products/' + image.name 
-
+    let filepathtoUpload = '/public/products/' + image.name ;
+//console.log(filepathtoUpload);
     if(!name || !description || !price || !rating) {
       throw createHttpError(400,'All fields are required')
     }
+
     const product = new ProductModel({
       name,
       price,
@@ -32,11 +36,13 @@ exports.create = async (req, res,next) => {
       image: filepathtoUpload,
       rating,
     });
-
+    
+    
     const result = await product.save();
-    res.status(201).send(result);
-  }
-  catch (error) {
+    console.log(result);
+    res.status(201).json(result);
+  }catch (error) {
+    
     next(error)
   }
 }

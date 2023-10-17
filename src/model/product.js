@@ -10,12 +10,12 @@ const productSchema = new Schema({
     required: true,
     min: [0, 'Price must be positive']
   },
-  discription:{
+  description:{
     type: String,
     required: true
   },
   image : {
-    type: String,
+    type: Buffer,
     required: true
   },
   });
