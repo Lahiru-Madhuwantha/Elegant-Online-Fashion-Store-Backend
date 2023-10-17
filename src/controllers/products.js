@@ -7,6 +7,7 @@ exports.create = async (req, res,next) => {
     name,
     price,
     description,
+    rating,
   } = req.body;
   try {
     const { image } = req.files;
@@ -21,7 +22,7 @@ exports.create = async (req, res,next) => {
 
     let filepathtoUpload = '/public/products/' + image.name 
 
-    if(!name || !description || !price) {
+    if(!name || !description || !price || !rating) {
       throw createHttpError(400,'All fields are required')
     }
     const product = new ProductModel({
@@ -29,6 +30,7 @@ exports.create = async (req, res,next) => {
       price,
       description,
       image: filepathtoUpload,
+      rating,
     });
 
     const result = await product.save();
@@ -45,6 +47,7 @@ exports.update = async(req,res,next) => {
     name,
     price,
     description,
+    rating,
   } = req.body;
 
   try {
@@ -76,6 +79,7 @@ exports.update = async(req,res,next) => {
     product.name = name;
     product.price = price;
     product.description = description;
+    product.rating = rating;
     if(image){
       product.image = filepathtoUpload;
     }
