@@ -34,7 +34,12 @@ exports.login = async(req, res, next)=>{
     }
 
     )
-
+    res.cookie('token', token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 8 * 60 * 60 * 1000), // 8 hours
+      secure: process.env.NODE_ENV === 'production', 
+    });
+    
     user.token = token;
     
     const result = await user.save();
@@ -71,9 +76,21 @@ exports.register =async(req, res, next)=>{
       })
   
       const result = await buyer.save();
+
+      const token = jwt.sign({
+        user_id: result._id,
+        email: result.email,
+      }, process.env.JWT_TOKEN_KEY, { expiresIn: '8h' });
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 8 * 60 * 60 * 1000), // 8 hours
+        secure: process.env.NODE_ENV === 'production', 
+      });
+  
       res.status(201).send(result);
   
     } catch (error) {
         next(error)
     }
-  }
+  };
