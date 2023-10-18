@@ -16,19 +16,20 @@ exports.create = async (req, res,next) => {
     //console.log(image);
     
     
-    let filepath = path.join(__dirname,'/../../public/products/',image.name);
-    console.log('Filepath:', __dirname, '/../../public/products/', image.name);
+    let filepath = path.join(__dirname,'/../../../elegant_frontend/src/productimage/',image.name);
+    console.log('Filepath:', __dirname, '/../../../elegant_frontend/src/productimage/', image.name);
 
     //let filepath = path.join(__dirname, '../../public/products/' , image.name);
     console.log(filepath);
      image.mv(filepath);
 
-    let filepathtoUpload = '/public/products/' + image.name ;
+    let filepathtoUpload = '../productimage/' + image.name ;
 //console.log(filepathtoUpload);
     if(!name || !description || !price || !rating) {
       throw createHttpError(400,'All fields are required')
     }
 
+    console.log(filepathtoUpload);
     const product = new ProductModel({
       name,
       price,

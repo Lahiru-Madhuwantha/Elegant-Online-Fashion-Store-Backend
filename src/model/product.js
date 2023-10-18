@@ -15,9 +15,15 @@ const productSchema = new Schema({
     required: true
   },
   image : {
-    type: Buffer,
+    type: String,
     required: true
   },
+  rating : {
+    type: Number,
+    required: true,
+    min: [0, 'Rating must be positive']
+  
+  }
   });
 
   const Product = mongoose.model('Product', productSchema);
