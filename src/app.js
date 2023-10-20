@@ -12,13 +12,15 @@ const ProductRouter = require('./routes/products');
 const OrderRouter = require('./routes/order');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const path = require('path');
 
 const port = process.env.PORT || 3005;
 
 app.use(cors());
 app.use(express.json())
 app.use(fileUpload());
-app.use('/uploads/products',express.static('public/products'))
+app.use('/products',express.static('public/products'))
+//app.use('/productimage', express.static(path.join(__dirname, '../elegant_frontend/src/productimage')));
 
 app.use('/api/v1/buyer', BuyerRouter);
 app.use('/api/v1/product', ProductRouter);
